@@ -45,7 +45,6 @@ class CustomerController extends Controller
     // GET /customers/{customer}
     public function show(Customer $customer)
     {
-        $customer->load('contracts');
         return view('customers.show', compact('customer'));
     }
 

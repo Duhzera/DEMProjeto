@@ -10,17 +10,27 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::create('customers', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('cpf')->unique();
-            $table->string('email')->nullable();
-            $table->string('phone')->nullable();
-            $table->json('documents')->nullable();
-            $table->timestamps();
-        });
-    }
+{
+    Schema::create('customers', function (Blueprint $table) {
+        $table->id();
+        $table->string('name');
+        $table->string('cpf')->unique();
+        $table->string('email')->nullable();
+        $table->string('phone')->nullable();
+        $table->json('documents')->nullable();
+
+        // Auditoria
+        $table->foreignId('created_by')
+              ->constrained('users')
+              ->cascadeOnDelete();
+        $table->foreignId('updated_by')
+              ->constrained('users')
+              ->cascadeOnDelete();
+
+        $table->timestamps();
+    });
+}
+
 
     /**
      * Reverse the migrations.
