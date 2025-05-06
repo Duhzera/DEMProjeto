@@ -2,158 +2,171 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid py-4">
-
-  {{-- Cabeçalho --}}
-  <div class="d-flex justify-content-between align-items-center mb-3">
+<div class="max-w-5xl mx-auto py-8 px-4 space-y-6">
+  {{-- Cabeçalho: Título, auditoria e voltar --}}
+  <div class="flex flex-col md:flex-row md:justify-between md:items-center space-y-4 md:space-y-0">
+    {{-- Título --}}
     <div>
-      <h5 class="mb-0">
-        RECEPTIVO – {{ $customer->program ?? 'INSS' }} (****{{ substr($customer->cpf, -4) }})
+      <h5 class="text-xl font-semibold dark:text-gray-100">
+        RECEPTIVO – {{ $customer->program ?? 'INSS' }}
+        <span class="text-gray-500 dark:text-gray-400 text-sm">
+          (****{{ substr($customer->cpf, -4) }})
+        </span>
       </h5>
-      <small class="text-muted">Consulte benefícios e simule empréstimos</small>
+      <p class="text-gray-600 dark:text-gray-400 text-sm">Consulte benefícios e simule empréstimos</p>
     </div>
-    <a href="{{ route('customers.index') }}" class="btn btn-outline-secondary">
-      <i class="bi bi-arrow-left"></i> Voltar
-    </a>
+
+    {{-- Auditoria --}}
+    <div class="text-sm text-gray-500 dark:text-gray-400 text-center">
+      <p>
+        Criado por
+        <strong class="dark:text-gray-100">{{ $customer->creator->name ?? '—' }}</strong>
+        em {{ $customer->created_at->format('d/m/Y H:i') }}
+      </p>
+      @if($customer->updated_by)
+      <p>
+        Alterado por
+        <strong class="dark:text-gray-100">{{ $customer->editor->name ?? '—' }}</strong>
+        em {{ $customer->updated_at->format('d/m/Y H:i') }}
+      </p>
+      @endif
+    </div>
+
+    {{-- Voltar --}}
+    <div>
+      <a href="{{ route('customers.index') }}"
+         class="inline-flex items-center px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600">
+        <i class="bi bi-arrow-left mr-2"></i> Voltar
+      </a>
+    </div>
   </div>
 
   {{-- Dados do Cliente --}}
-  <div class="card mb-4">
-    <div class="card-header">
-      <strong>Dados Cliente</strong>
-    </div>
-    <div class="card-body">
-      <div class="row">
-        {{-- Coluna 1 --}}
-        <div class="col-md-6">
-          <dl class="row mb-0">
-            <dt class="col-sm-4">Nome</dt>
-            <dd class="col-sm-8">{{ $customer->name }}</dd>
-
-            <dt class="col-sm-4">CPF</dt>
-            <dd class="col-sm-8">{{ $customer->cpf }}</dd>
-
-            <dt class="col-sm-4">Email</dt>
-            <dd class="col-sm-8">{{ $customer->email }}</dd>
-
-            <dt class="col-sm-4">Telefone</dt>
-            <dd class="col-sm-8">{{ $customer->phone }}</dd>
-          </dl>
+  <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+    <h6 class="text-lg font-medium mb-4 dark:text-gray-100">Dados do Cliente</h6>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {{-- Coluna 1 --}}
+      <dl class="space-y-2">
+        <div class="flex justify-between">
+          <dt class="font-semibold dark:text-gray-200">Nome:</dt>
+          <dd class="dark:text-gray-100">{{ $customer->name }}</dd>
         </div>
-        {{-- Coluna 2 --}}
-        <div class="col-md-6">
-          <dl class="row mb-0">
-            <dt class="col-sm-4">Data Nasc.</dt>
-            <dd class="col-sm-8">{{ $customer->birth_date ?? '–' }}</dd>
-
-            <dt class="col-sm-4">Benefício</dt>
-            <dd class="col-sm-8">{{ $customer->benefit_type ?? '–' }}</dd>
-
-            <dt class="col-sm-4">Banco</dt>
-            <dd class="col-sm-8">{{ $customer->bank ?? '–' }}</dd>
-
-            <dt class="col-sm-4">Endereço</dt>
-            <dd class="col-sm-8">{{ $customer->address ?? '–' }}</dd>
-          </dl>
+        <div class="flex justify-between">
+          <dt class="font-semibold dark:text-gray-200">CPF:</dt>
+          <dd class="dark:text-gray-100">{{ $customer->cpf }}</dd>
         </div>
-      </div>
+        <div class="flex justify-between">
+          <dt class="font-semibold dark:text-gray-200">Email:</dt>
+          <dd class="dark:text-gray-100">{{ $customer->email }}</dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="font-semibold dark:text-gray-200">Telefone:</dt>
+          <dd class="dark:text-gray-100">{{ $customer->phone }}</dd>
+        </div>
+      </dl>
+      {{-- Coluna 2 --}}
+      <dl class="space-y-2">
+        <div class="flex justify-between">
+          <dt class="font-semibold dark:text-gray-200">Data Nasc.:</dt>
+          <dd class="dark:text-gray-100">{{ $customer->birth_date ?? '–' }}</dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="font-semibold dark:text-gray-200">Benefício:</dt>
+          <dd class="dark:text-gray-100">{{ $customer->benefit_type ?? '–' }}</dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="font-semibold dark:text-gray-200">Banco:</dt>
+          <dd class="dark:text-gray-100">{{ $customer->bank ?? '–' }}</dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="font-semibold dark:text-gray-200">Endereço:</dt>
+          <dd class="dark:text-gray-100">{{ $customer->address->logradouro ?? '–' }}</dd>
+        </div>
+      </dl>
     </div>
   </div>
 
   {{-- Cards de Métricas --}}
-  <div class="row mb-4 g-3">
-    <div class="col-sm-6 col-md-3">
-      <div class="card border-success h-100">
-        <div class="card-body text-center">
-          <small class="text-muted">MR</small>
-          <h5 class="text-success mb-0">R$ {{ number_format($customer->mr ?? 0, 2, ',', '.') }}</h5>
-        </div>
-      </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow text-center">
+      <p class="text-sm text-gray-500 dark:text-gray-400">MR</p>
+      <p class="text-xl font-semibold text-green-600 dark:text-green-400">
+        R$ {{ number_format($customer->mr ?? 0, 2, ',', '.') }}
+      </p>
     </div>
-    <div class="col-sm-6 col-md-3">
-      <div class="card border-secondary h-100">
-        <div class="card-body text-center">
-          <small class="text-muted">Base de Cálculo</small>
-          <h5 class="text-secondary mb-0">R$ {{ number_format($customer->base_calculation ?? 0, 2, ',', '.') }}</h5>
-        </div>
-      </div>
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow text-center">
+      <p class="text-sm text-gray-500 dark:text-gray-400">Base de Cálculo</p>
+      <p class="text-xl font-semibold text-gray-600 dark:text-gray-300">
+        R$ {{ number_format($customer->base_calculation ?? 0, 2, ',', '.') }}
+      </p>
     </div>
-    <div class="col-sm-6 col-md-3">
-      <div class="card border-info h-100">
-        <div class="card-body text-center">
-          <small class="text-muted">Margem 30%</small>
-          <h5 class="text-info mb-0">R$ {{ number_format($customer->margin_30 ?? 0, 2, ',', '.') }}</h5>
-        </div>
-      </div>
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow text-center">
+      <p class="text-sm text-gray-500 dark:text-gray-400">Margem 30%</p>
+      <p class="text-xl font-semibold text-blue-500 dark:text-blue-400">
+        R$ {{ number_format($customer->margin_30 ?? 0, 2, ',', '.') }}
+      </p>
     </div>
-    <div class="col-sm-6 col-md-3">
-      <div class="card border-warning h-100">
-        <div class="card-body text-center">
-          <small class="text-muted">Cartão Benefício</small>
-          <h5 class="text-warning mb-0">R$ {{ number_format($customer->benefit_card ?? 0, 2, ',', '.') }}</h5>
-        </div>
-      </div>
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow text-center">
+      <p class="text-sm text-gray-500 dark:text-gray-400">Cartão Benefício</p>
+      <p class="text-xl font-semibold text-yellow-500 dark:text-yellow-400">
+        R$ {{ number_format($customer->benefit_card ?? 0, 2, ',', '.') }}
+      </p>
     </div>
   </div>
 
-  {{-- Seção de Empréstimos --}}
-  <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-      <span><i class="bi bi-bank me-1"></i> Empréstimos Bancários</span>
-      <button class="btn btn-sm btn-outline-primary" type="button"
-              data-bs-toggle="collapse" data-bs-target="#loansCollapse" 
-              aria-expanded="true" aria-controls="loansCollapse">
-        <i class="bi bi-eye-slash me-1"></i> Esconder
+  {{-- Empréstimos Bancários --}}
+  <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
+    <div class="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
+      <h6 class="font-medium text-gray-800 dark:text-gray-200">Empréstimos Bancários</h6>
+      <button @click="$refs.loans.classList.toggle('hidden')"
+              class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+        <i class="bi bi-eye-slash"></i>
       </button>
     </div>
-    <div class="collapse show" id="loansCollapse">
-      <div class="card-body">
-
-        @foreach($customer->contracts as $contract)
-        <div class="card mb-3 shadow-sm">
-          <div class="card-header d-flex justify-content-between">
-            <strong><i class="bi bi-building me-1"></i> Banco {{ $contract->bank_name ?? '–' }}</strong>
-            <span class="badge bg-success">Parcela: R$ {{ number_format($contract->installment,2,',','.') }}</span>
+    <div x-ref="loans" class="p-4 space-y-4">
+      @forelse($customer->contracts as $contract)
+        <div class="bg-white dark:bg-gray-900 p-4 rounded-lg shadow">
+          <div class="flex justify-between items-center mb-2">
+            <h6 class="font-semibold text-gray-800 dark:text-gray-200">
+              Banco {{ $contract->bank_name ?? '–' }}
+            </h6>
+            <span class="text-sm bg-green-100 dark:bg-green-200 text-green-800 dark:text-green-900 px-2 py-1 rounded">
+              Parcela: R$ {{ number_format($contract->installment,2,',','.') }}
+            </span>
           </div>
-          <div class="card-body">
-            <div class="row g-3">
-              <div class="col-md-2">
-                <label class="form-label">Saldo Devedor</label>
-                <input type="text" readonly class="form-control" 
-                       value="R$ {{ number_format($contract->outstanding_balance,2,',','.') }}">
-              </div>
-              <div class="col-md-2">
-                <label class="form-label">Prazo (meses)</label>
-                <input type="text" readonly class="form-control" 
-                       value="{{ $contract->term ?? '–' }}">
-              </div>
-              <div class="col-md-2">
-                <label class="form-label">Taxa</label>
-                <input type="text" readonly class="form-control" 
-                       value="{{ number_format($contract->rate,2,',','.') }}%">
-              </div>
-              <div class="col-md-3">
-                <label class="form-label">Data Averbação</label>
-                <input type="text" readonly class="form-control" 
-                       value="{{ $contract->record_date->format('d/m/Y') }}">
-              </div>
-              <div class="col-md-3">
-                <label class="form-label">Contrato Nº</label>
-                <input type="text" readonly class="form-control" 
-                       value="{{ $contract->id }}">
-              </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div>
+              <p class="text-xs text-gray-500 dark:text-gray-400">Saldo Devedor</p>
+              <p class="font-medium dark:text-gray-100">
+                R$ {{ number_format($contract->outstanding_balance,2,',','.') }}
+              </p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500 dark:text-gray-400">Prazo (meses)</p>
+              <p class="font-medium dark:text-gray-100">{{ $contract->term ?? '–' }}</p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500 dark:text-gray-400">Taxa</p>
+              <p class="font-medium dark:text-gray-100">
+                {{ number_format($contract->rate,2,',','.') }}%
+              </p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500 dark:text-gray-400">Data Averbação</p>
+              <p class="font-medium dark:text-gray-100">
+                {{ $contract->record_date->format('d/m/Y') }}
+              </p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500 dark:text-gray-400">Contrato Nº</p>
+              <p class="font-medium dark:text-gray-100">{{ $contract->id }}</p>
             </div>
           </div>
         </div>
-        @endforeach
-
-        @if($customer->contracts->isEmpty())
-          <p class="text-center text-muted mb-0">Nenhum empréstimo cadastrado.</p>
-        @endif
-
-      </div>
+      @empty
+        <p class="text-center text-gray-500 dark:text-gray-400">Nenhum empréstimo cadastrado.</p>
+      @endforelse
     </div>
   </div>
-
 </div>
 @endsection

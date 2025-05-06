@@ -9,6 +9,7 @@ Route::get('/', function () {
     return redirect()->route('customers.index');
 });
 
+
 // rotas de autenticação (login/register)
 Auth::routes();
 
@@ -24,5 +25,6 @@ Route::middleware('auth')->group(function() {
 
     // CRUD completo de contratos
     Route::resource('contracts', ContractController::class);
-
+   
+   
 });

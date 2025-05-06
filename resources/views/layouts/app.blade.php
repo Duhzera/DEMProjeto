@@ -1,80 +1,60 @@
 <!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_','-',app()->getLocale()) }}">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>{{ config('app.name','Laravel') }}</title>
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+  {{-- Alpine (para o toggle de tema) --}}
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js"></script>
 
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
-
-    <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+  {{-- Aqui entra o Tailwind + seu JS --}}
+  @vite(['resources/css/app.css','resources/js/app.js'])
 </head>
-<body>
-    <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
 
-                    </ul>
-
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto">
-                        <!-- Authentication Links -->
-                        @guest
-                            @if (Route::has('login'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                </li>
-                            @endif
-
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
-                        @else
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }}
-                                </a>
-
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
-                        @endguest
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
-        <main class="py-4">
-            @yield('content')
-        </main>
+<body
+  x-data="themeSwitcher()" 
+  x-init="init()" 
+  :class="{ 'dark': theme }"
+  class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+>
+<h1 class="text-3xl font-bold underline">
+    </h1>
+  <nav class="bg-white dark:bg-gray-800 shadow">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="{{ url('/') }}" class="text-xl font-bold">{{ config('app.name') }}</a>
+      <div class="flex items-center space-x-4">
+        {{-- toggle --}}
+        <button @click="toggle()" class="p-2 rounded bg-gray-200 dark:bg-gray-700">
+          <template x-if="!theme">🌙</template>
+          <template x-if="theme">☀️</template>
+        </button>
+        {{-- auth links... --}}
+      </div>
     </div>
+  </nav>
+
+  <main class="container mx-auto px-4 py-6">
+    @yield('content')
+  </main>
+
+  <script>
+    function themeSwitcher() {
+      return {
+        theme: localStorage.theme === 'dark',
+        init() {
+          document.documentElement.classList.toggle('dark', this.theme)
+        },
+        toggle() {
+          this.theme = !this.theme
+          localStorage.theme = this.theme ? 'dark' : 'light'
+          document.documentElement.classList.toggle('dark', this.theme)
+        },
+      }
+    }
+  </script>
 </body>
 </html>
