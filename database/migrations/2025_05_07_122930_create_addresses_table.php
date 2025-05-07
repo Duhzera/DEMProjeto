@@ -13,22 +13,21 @@ return new class extends Migration
     {
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
-            // Chave estrangeira para customer
-            $table->foreignId('customer_id')
-                ->constrained()
-                ->cascadeOnDelete();
+            $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
             $table->string('cep')->nullable();
-            $table->string('logradouro')->nullable();
-            $table->string('numero')->nullable();
-            $table->string('complemento')->nullable();
-            $table->string('bairro')->nullable();
-            $table->string('cidade')->nullable();
-            $table->string('uf',2)->nullable();
-            $table->string('referencia')->nullable();
+            $table->string('street')->nullable();
+            $table->string('number')->nullable();
+            $table->string('complement')->nullable();
+            $table->string('neighborhood')->nullable();
+            $table->string('city')->nullable();
+            $table->string('state', 2)->nullable();
             $table->timestamps();
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::dropIfExists('addresses');

@@ -10,11 +10,16 @@ class Contract extends Model
     use HasFactory;
 
     protected $fillable = [
-        'customer_id',
-        'amount',
-        'start_date',
-        'end_date',
+        'number',
+        'date',
+        'value',
         'status',
+        'customer_id',
+    ];
+
+    protected $casts = [
+        'date' => 'date',
+        'value' => 'decimal:2',
     ];
 
     // Relação com Customer

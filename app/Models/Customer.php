@@ -21,8 +21,7 @@ class Customer extends Model
      * pois eles são preenchidos pelos eventos.
      */
     protected $fillable = [
-        'name', 'cpf', 'email', 'phone', 'documents',
-        // demais campos → veja sua migration
+        'name', 'cpf', 'registration', 'specie', 'birth_date', 'rg', 'rg_issuer', 'civil_status', 'gender', 'bank', 'agency', 'account', 'savings', 'phone', 'reference', 'averting_body', 'unit', 'admission_date', 'in100_date', 'position', 'salary', 'margin', 'notes', 'created_by', 'updated_by'
     ];
 
     /**
@@ -75,5 +74,12 @@ class Customer extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
-    
+
+    /**
+     * Logs de alterações deste cliente
+     */
+    public function logs()
+    {
+        return $this->hasMany(\App\Models\CustomerLog::class)->latest();
+    }
 }

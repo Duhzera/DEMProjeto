@@ -3,17 +3,31 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\CustomerLog;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
     // GET /customers
-    public function index()
+    public function index(Request $request)
     {
-        // busca todos os clientes (pode paginar também)
-        $customers = Customer::all();
+        $query = Customer::query();
 
-        // retorna a view com a variável
+        // Busca por nome ou CPF
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('cpf', 'like', "%{$search}%");
+            });
+        }
+
+        // Ordena por nome
+        $query->orderBy('name');
+
+        // Busca com contratos e paginação
+        $customers = $query->with('contracts')->paginate(10);
+
         return view('customers.index', compact('customers'));
     }
 
@@ -26,16 +40,21 @@ class CustomerController extends Controller
     // POST /customers
     public function store(Request $request)
     {
-        // aqui você faz validação e create
         $data = $request->validate([
             'name'     => 'required|string|max:255',
             'cpf'      => 'required|unique:customers,cpf',
             'email'    => 'nullable|email',
             'phone'    => 'nullable|string',
-            'documents'=> 'nullable',
         ]);
 
-        Customer::create($data);
+        $customer = Customer::create($data);
+
+        // Log de criação
+        CustomerLog::create([
+            'customer_id' => $customer->id,
+            'user_id' => auth()->id(),
+            'action' => 'created',
+        ]);
 
         return redirect()
             ->route('customers.index')
@@ -45,6 +64,7 @@ class CustomerController extends Controller
     // GET /customers/{customer}
     public function show(Customer $customer)
     {
+        $customer->load('contracts');
         return view('customers.show', compact('customer'));
     }
 
@@ -62,13 +82,19 @@ class CustomerController extends Controller
             'cpf'      => 'required|unique:customers,cpf,'.$customer->id,
             'email'    => 'nullable|email',
             'phone'    => 'nullable|string',
-            'documents'=> 'nullable',
         ]);
 
         $customer->update($data);
 
+        // Log de alteração
+        CustomerLog::create([
+            'customer_id' => $customer->id,
+            'user_id' => auth()->id(),
+            'action' => 'updated',
+        ]);
+
         return redirect()
-            ->route('customers.index')
+            ->route('customers.show', $customer)
             ->with('success', 'Cliente atualizado com sucesso.');
     }
 
